@@ -1,0 +1,29 @@
+<ul class="navbar-nav">
+  <li>
+    <div class="dropdown drp-user" ngbDropdown placement="auto">
+      <a href="javascript:" ngbDropdownToggle data-toggle="dropdown">
+        <i class="icon feather icon-user"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right profile-notification" ngbDropdownMenu>
+        <div class="pro-head">
+          <i class="feather icon-user "></i>
+          <span class="mx-2 text-capitalize">{{ authority }}</span>
+        </div>
+        <ul class="pro-body">
+          <li *ngIf="authority === 'technician' || authority === 'client'">
+            <a routerLink="/profile" class="dropdown-item" style="cursor: pointer">
+              <i class="feather icon-user"></i>
+              Profile
+            </a>
+          </li>
+          <li>
+            <a (click)="logout()" class="dropdown-item" style="cursor: pointer">
+              <i class="feather icon-log-out"></i>
+              Log out
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>
+</ul>

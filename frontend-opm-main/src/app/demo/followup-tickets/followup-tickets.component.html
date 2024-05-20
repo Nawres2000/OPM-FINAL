@@ -1,0 +1,282 @@
+<div class="card mx-3 overflow-hidden">
+  <div class="card-header row justify-content-between align-items-center">
+    <div class="w-auto row">
+      <a routerLink="../../" class="home-icon mx-3" pTooltip="Back" tooltipPosition="top">
+        <i class="fa fa-arrow-left"></i>
+      </a>
+      <div *ngIf="!isLoading" class="w-auto">
+        <span class="text-muted small">Follow Up:</span> <br>
+        <span class="title">{{ followUp.title }}</span>
+      </div>
+      <div *ngIf="isLoading" class="w-auto">
+        <span class="text-muted small">Loading...</span>
+      </div>
+    </div>
+    <ng-container *ngIf="!isLoading">
+      <span class="text-muted" *ngIf="!!followUp.employeeId; else ShowButton">
+        Technician: <br>
+        <span class="title">
+          {{ followUp.employeeId.firstName + " " + followUp.employeeId.lastName }}
+        </span>
+        <a *ngIf="userRole !== 'technician'" [pTooltip]="'Edit'" tooltipPosition="top" style="cursor: pointer;"
+          (click)="displayAssignTechModal = true">
+          <i class="pi pi-pencil mx-2"></i>
+        </a>
+      </span>
+      <ng-template #ShowButton>
+        <p-button *ngIf="!followUp.employeeId && userRole !== 'technician'" (click)="displayAssignTechModal = true"
+          icon="pi pi-cog" label="Assign a technician" styleClass="p-button p-button-info"></p-button>
+      </ng-template>
+    </ng-container>
+  </div>
+  <div class="card-body">
+    <ng-container *ngIf="isLoading; else ShowData">
+      <div class="row justify-content-between">
+        <div
+          style="width: 100%; height: 400px; text-align: center; font-size: 1rem; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+          <div class="">
+            <i class="pi pi-spinner pi-spin"></i>
+            <br>
+            <span>Loading...</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #ShowData>
+      <div>
+        <span class="text-muted small mt-3">Description:</span> <br>
+        <p class="title small">{{ followUp.description }}</p>
+      </div>
+      <div class="mt-3">
+        <span class="text-muted small mt-3">Finish Date:</span> <br>
+        <span class="title small">{{ (followUp.finishDate | date: 'mediumDate') || '--' }}</span>
+      </div>
+      <div class="mt-3">
+        <span class="text-muted small mt-3">Attached files:</span>
+        <span class="text-muted small"
+          *ngIf="followUp.listOfFiles && followUp.listOfFiles.length === 0; else ShowFiles">
+          <br><i class="pi pi-times"></i> No files
+        </span>
+        <ng-template #ShowFiles>
+          <br>
+          <ng-container *ngFor="let file of followUp.listOfFiles">
+            <a class="link" [href]="apiUrl + '/' + file.path" target="_blank">
+              <i class="pi pi-file mx-1"></i>
+              {{ parseFileName(file.fileName) }}
+              <i pTooltip="Open" tooltipPosition="top" class="pi pi-external-link open-link-icon mx-2"></i>
+            </a>
+            <br>
+          </ng-container>
+        </ng-template>
+      </div>
+    </ng-template>
+  </div>
+  <div *ngIf="!isLoading" class="card-footer row justify-content-between align-items-center w-100">
+    <span class="mx-3">
+      Status:
+      <span *ngIf="followUp.status === 'Waiting'" class="p-tag p-tag-warning">Waiting</span>
+      <span *ngIf="followUp.status === 'In progress'" class="p-tag p-tag-warning">In progress</span>
+      <span *ngIf="followUp.status === 'Done'" class="p-tag p-tag-info">Done</span>
+      <span *ngIf="followUp.status === 'Valid'" class="p-tag p-tag-success">Valid</span>
+      <span *ngIf="followUp.status === 'Expired'" class="p-tag p-tag-danger">Expired</span>
+
+      <button (click)="validate()" *ngIf="followUp.status === 'In progress'" pButton type="button" icon="pi pi-check"
+        label="Mark as Done" class="p-button-success p-button-sm p-button-text mx-2"></button>
+    </span>
+    <span class="text-muted">Created: {{ followUp.creationDate | date: 'medium' }}</span>
+  </div>
+</div>
+
+<div class="card mx-3 overflow-hidden mt-3">
+  <div class="card-header row justify-content-between align-items-center">
+    <span class="w-auto mx-3 title">Tickets</span>
+    <div *ngIf="userRole === 'technician'" class="w-auto">
+      <button type="button" [disabled]="followUp.status !== 'In progress'" (click)="displayAddTicketModal = true"
+        class="btn btn-primary w-auto">
+        <i class="pi pi-plus m-0"></i>
+      </button>
+    </div>
+  </div>
+  <div class="card-body" style="min-height: 400px;">
+    <div class="row justify-content-between">
+      <ng-container *ngIf="isTicketsLoading; else ShowTickets">
+        <div
+          style="width: 100%; height: 400px; text-align: center; font-size: 1rem; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+          <div class="">
+            <i class="pi pi-spinner pi-spin"></i>
+            <br>
+            <span>Loading...</span>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #ShowTickets>
+        <ng-container *ngIf="tickets.length > 0; else ShowNoTickets">
+          <ng-container *ngFor="let ticket of tickets; trackBy: trackById">
+            <div class="col-12 col-lg-6">
+              <a class="custom-card" (click)="selectTicket(ticket._id)">
+                <div class="custom-card-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <span class="custom-card-title">
+                        <i class="pi pi-file"></i>
+                        <span class="mx-2">{{ ticket.title }}</span>
+                      </span>
+                      <br>
+                      <span class="text-muted">
+                        Created:
+                        {{ ticket.creationDate | date: 'medium' }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="userRole === 'admin'" class="custom-card-tr-corner">
+                  <button (click)="deleteTicket($event, ticket._id, followUpId)" class="btn btn-sm btn-danger">
+                    <i class="pi pi-trash m-0"></i>
+                  </button>
+                </div>
+                <div class="custom-card-corner">
+                  <span *ngIf="ticket.status === 'New'" class="p-tag p-tag-success">New</span>
+                  <span *ngIf="ticket.status === 'Closed'" class="p-tag p-tag-danger">Closed</span>
+                </div>
+                <div class="custom-card-stripe"></div>
+              </a>
+            </div>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+    </div>
+  </div>
+  <div *ngIf="!isTicketsLoading" class="card-footer text-start">
+    <span>{{ tickets.length || 0 }} ticket(s)</span>
+  </div>
+</div>
+
+<ng-template #ShowNoTickets>
+  <div
+    style="width: 100%; height: 400px; text-align: center; font-size: 1rem; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+    <div class="">
+      <i class="pi pi-times"></i>
+      <br>
+      <span>No tickets</span>
+    </div>
+  </div>
+</ng-template>
+
+<p-dialog header="Assign a technician" [(visible)]="displayAssignTechModal" [modal]="true" [style]="{width: '50vw'}"
+  [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+  <form [formGroup]="assignTechForm" #addForm (ngSubmit)="assignTechnician()">
+    <div class="form-group">
+      <label for="title">Technician:</label>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="pi pi-cog"></i></span>
+        </div>
+        <select type="text" class="form-control" id="employeeId" placeholder="Select a technician"
+          formControlName="employeeId">
+          <option value="" selected>Select a technician</option>
+          <option *ngFor="let tech of technicians" [value]="tech._id">{{ tech.firstName + ' ' + tech.lastName }}
+          </option>
+        </select>
+      </div>
+      <div *ngIf="assignTechForm.get('employeeId').errors && assignTechForm.get('employeeId').touched"
+        class="text-danger">
+        Technician is required.
+      </div>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-plus" (click)="assignTechnician()" label="Assign" styleClass="p-button"></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog header="Add a ticket" [(visible)]="displayAddTicketModal" [modal]="true" [style]="{width: '50vw'}"
+  [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+  <form [formGroup]="ticketForm" #addForm (ngSubmit)="addTicket()">
+    <div class="form-group">
+      <label for="title">Title:</label>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="feather icon-mail"></i></span>
+        </div>
+        <input type="text" class="form-control" id="title" placeholder="Title" formControlName="title">
+      </div>
+      <div *ngIf="ticketForm.get('title').errors && ticketForm.get('title').touched" class="text-danger">
+        Title is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="feather icon-mail"></i></span>
+        </div>
+        <textarea type="text" class="form-control" id="description" placeholder="Description"
+          formControlName="description"></textarea>
+      </div>
+      <div *ngIf="ticketForm.get('description').errors && ticketForm.get('description').touched" class="text-danger">
+        Description is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="files">Files:</label>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="feather icon-file"></i></span>
+        </div>
+        <input class="form-control" type="file" id="files" multiple (change)="onFileSelect($event)">
+      </div>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-plus" (click)="addTicket()" label="Add" styleClass="p-button"></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog header="Ticket" [(visible)]="displayShowTicketModal" [modal]="true" [style]="{width: '50vw'}"
+  [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+  <ng-container *ngIf="selectedTicket">
+    <div>
+      <span class="text-muted small">Title:</span> <br>
+      <span class="title">{{ selectedTicket.title }}</span>
+    </div>
+    <div class="mt-3">
+      <span class="text-muted small mt-3">Description:</span> <br>
+      <p class="title small">{{ selectedTicket.description }}</p>
+    </div>
+    <div class="mt-3">
+      <span class="text-muted small mt-3">Attached files:</span>
+      <span class="text-muted small"
+        *ngIf="selectedTicket.listOfFiles && selectedTicket.listOfFiles.length === 0; else ShowFiles">
+        <br><i class="pi pi-times"></i> No files
+      </span>
+      <ng-template #ShowFiles>
+        <br>
+        <ng-container *ngFor="let file of selectedTicket.listOfFiles">
+          <a class="link" [href]="apiUrl + '/' + file.path" target="_blank">
+            <i class="pi pi-file mx-1"></i>
+            {{ parseFileName(file.fileName) }}
+            <i pTooltip="Open" tooltipPosition="top" class="pi pi-external-link open-link-icon mx-2"></i>
+          </a>
+          <a pTooltip="Delete this file" style="cursor: pointer;"
+            (click)="deleteFileFromTicket(file._id, selectedTicket._id)">
+            <i class="pi pi-trash mx-2 text-danger"></i>
+          </a>
+          <br>
+        </ng-container>
+      </ng-template>
+      <div class="mt-3">
+        <span class="text-muted small mt-3">Created: {{ selectedTicket.creationDate | date: 'medium' }}</span>
+      </div>
+    </div>
+    <hr>
+    <div class="row justify-content-between align-items-center w-100">
+      <span class="mx-3">Status:
+        <span *ngIf="selectedTicket.status === 'New'" class="p-tag p-tag-success">New</span>
+        <span *ngIf="selectedTicket.status === 'Closed'" class="p-tag p-tag-danger">Closed</span>
+      </span>
+      <p-button *ngIf="selectedTicket.status !== 'Closed' && userRole === 'technician'" (click)="closeTicket()"
+        icon="pi pi-check-circle" label="Close" styleClass="p-button p-button-success"></p-button>
+    </div>
+  </ng-container>
+</p-dialog>

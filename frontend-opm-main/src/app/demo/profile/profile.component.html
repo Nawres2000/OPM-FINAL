@@ -1,0 +1,199 @@
+<div class="card mx-1">
+  <div class="card-header">
+    <h4>My profile</h4>
+  </div>
+  <div class="card-body" style="min-height: 400px;">
+    <div class="row justify-content-between">
+      <ng-container *ngIf="isLoading; else ShowData">
+        <div
+          style="width: 100%; height: 400px; text-align: center; font-size: 1rem; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+          <div class="">
+            <i class="pi pi-spinner pi-spin"></i>
+            <br>
+            <span>Loading...</span>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #ShowData>
+        <div class="col-12">
+          <form *ngIf="authority === 'client'" class="row form-group" [formGroup]="clientForm" (ngSubmit)="signUp()">
+
+            <div class="col-lg-6 mb-2">
+              <label for="email">E-mail:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="feather icon-mail"></i></span>
+                </div>
+                <input type="email" class="form-control" id="email" formControlName="email" placeholder="Email address">
+              </div>
+              <div *ngIf="clientForm.get('email').errors && clientForm.get('email').touched" class="text-danger">
+                * Email is required.
+              </div>
+            </div>
+
+            <div class="col-lg-6 mb-2">
+              <label for="company">Company:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="feather icon-box"></i></span>
+                </div>
+                <input type="text" class="form-control" id="company" formControlName="company"
+                  placeholder="Company Name">
+              </div>
+              <div *ngIf="clientForm.get('company').errors && clientForm.get('company').touched" class="text-danger">
+                * Company is required.
+              </div>
+            </div>
+
+            <div class="col-lg-6 mb-2">
+              <label for="dateOfRegistration">Date of Registration:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="feather icon-calendar"></i></span>
+                </div>
+                <input type="date" class="form-control" id="dateOfRegistration" formControlName="dateOfRegistration"
+                  placeholder="Date of Registration">
+              </div>
+              <div *ngIf="clientForm.get('dateOfRegistration').errors && clientForm.get('dateOfRegistration').touched"
+                class="text-danger">
+                * Date of Registration is required.
+              </div>
+            </div>
+          </form>
+
+          <form *ngIf="authority === 'technician'" class="row form-group" [formGroup]="technicianForm"
+            (ngSubmit)="signUp()">
+            <div class="col-lg-6 mb-2">
+              <label for="firstName">First Name:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="feather icon-user"></i></span>
+                </div>
+                <input type="text" class="form-control" id="firstName" formControlName="firstName"
+                  placeholder="First Name">
+              </div>
+              <div *ngIf="technicianForm.get('firstName').errors && technicianForm.get('firstName').touched"
+                class="text-danger">
+                * First Name is required.
+              </div>
+            </div>
+
+            <div class="col-lg-6 mb-2">
+              <label for="lastName">Last Name:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="feather icon-user"></i></span>
+                </div>
+                <input type="text" class="form-control" id="lastName" formControlName="lastName"
+                  placeholder="Last Name">
+              </div>
+              <div *ngIf="technicianForm.get('lastName').errors && technicianForm.get('lastName').touched"
+                class="text-danger">
+                * Last Name is required.
+              </div>
+            </div>
+
+            <div class="col-lg-6 mb-2">
+              <label for="birthDate">Birth date:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="feather icon-calendar"></i></span>
+                </div>
+                <input type="date" class="form-control" id="birthDate" formControlName="birthDate"
+                  placeholder="Date of birth">
+              </div>
+              <div *ngIf="technicianForm.get('birthDate').errors && technicianForm.get('birthDate').touched"
+                class="text-danger">
+                * Birth Date is required.
+              </div>
+            </div>
+
+            <div class="col-lg-6 mb-2">
+              <label for="email">E-mail:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="feather icon-mail"></i></span>
+                </div>
+                <input type="email" class="form-control" id="email" formControlName="email" placeholder="Email address">
+              </div>
+              <div *ngIf="technicianForm.get('email').errors && technicianForm.get('email').touched"
+                class="text-danger">
+                * Email is required.
+              </div>
+            </div>
+          </form>
+
+          <div class="row justify-content-center align-items-center w-100 mt-3 m-0 p-0">
+            <button type="button" (click)="update()" class="btn btn-primary btn-block col-lg-6">
+              <span *ngIf="!isEditingInfo">
+                <i class="pi pi-pencil mx-1"></i>
+                Edit
+              </span>
+              <i *ngIf="isEditingInfo" class="pi pi-spinner pi-spin"></i>
+            </button>
+          </div>
+
+          <hr>
+          <h6>Change password:</h6>
+          <form class="row form-group" [formGroup]="resetPasswordForm">
+            <div class="col-lg-6 mb-2">
+              <label for="firstName">Old password:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="feather icon-user"></i></span>
+                </div>
+                <input type="password" class="form-control" id="oldPassword" formControlName="oldPassword"
+                  placeholder="Old password">
+              </div>
+              <div *ngIf="resetPasswordForm.get('oldPassword').errors && resetPasswordForm.get('oldPassword').touched"
+                class="text-danger">
+                * Required.
+              </div>
+            </div>
+
+            <div class="col-lg-6 mb-2">
+              <label for="lastName">New password:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="feather icon-user"></i></span>
+                </div>
+                <input type="password" class="form-control" id="newPassword" formControlName="newPassword"
+                  placeholder="New password">
+              </div>
+              <div *ngIf="resetPasswordForm.get('newPassword').errors && resetPasswordForm.get('newPassword').touched"
+                class="text-danger">
+                * Required.
+              </div>
+            </div>
+
+            <div class="col-lg-6 mb-2">
+              <label for="birthDate">Confirm password:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="feather icon-calendar"></i></span>
+                </div>
+                <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword"
+                  placeholder="Confirm password">
+              </div>
+              <div
+                *ngIf="resetPasswordForm.get('confirmPassword').errors && resetPasswordForm.get('confirmPassword').touched"
+                class="text-danger">
+                * Required.
+              </div>
+            </div>
+          </form>
+
+          <div class="row justify-content-center align-items-center w-100 mt-3 m-0 p-0">
+            <button type="button" (click)="resetPassword()" class="btn btn-primary btn-block col-lg-6">
+              <span *ngIf="!isPasswordEditing">
+                <i class="pi pi-pencil mx-1"></i>
+                Change
+              </span>
+              <i *ngIf="isPasswordEditing" class="pi pi-spinner pi-spin"></i>
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

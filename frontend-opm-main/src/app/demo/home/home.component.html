@@ -1,0 +1,320 @@
+<div class="card mx-1">
+  <div class="card-header">
+    <h4>Analytics</h4>
+  </div>
+  <div class="card-body" style="min-height: 400px;">
+    <div class="row justify-content-between">
+        <ng-container *ngIf="authority === 'admin'">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-xl-4 col-md-12">
+                <div class="card proj-t-card">
+                  <div class="card-body">
+                    <div class="row align-items-center m-b-30">
+                      <div class="col-auto">
+                        <i class="far fa-calendar-check text-c-red f-30"></i>
+                      </div>
+                      <div class="col p-l-0">
+                        <h6 class="m-b-5">Closed Tickets</h6>
+                      </div>
+                    </div>
+                    <div class="row align-items-center text-center">
+                      <div class="col">
+                        <h6 class="m-b-0">Total</h6>
+                      </div>
+                      <div class="col"><i class="fas fa-exchange-alt text-c-red f-18"></i></div>
+                      <div class="col">
+                        <h6 class="m-b-0">{{ closedTicketsCount }}</h6>
+                      </div>
+                    </div>
+                    <h6 class="pt-badge bg-c-red"></h6>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-4 col-md-6">
+                <div class="card proj-t-card">
+                  <div class="card-body">
+                    <div class="row align-items-center m-b-30">
+                      <div class="col-auto">
+                        <i class="fas fa-calendar-check text-c-green f-30"></i>
+                      </div>
+                      <div class="col p-l-0">
+                        <h6 class="m-b-5">Open Tickets</h6>
+                      </div>
+                    </div>
+                    <div class="row align-items-center text-center">
+                      <div class="col">
+                        <h6 class="m-b-0">Total</h6>
+                      </div>
+                      <div class="col"><i class="fas fa-exchange-alt text-c-green f-18"></i></div>
+                      <div class="col">
+                        <h6 class="m-b-0">{{ openTicketsCount }}</h6>
+                      </div>
+                    </div>
+                    <h6 class="pt-badge bg-c-green"></h6>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-4 col-md-6">
+                <div class="card proj-t-card">
+                  <div class="card-body">
+                    <div class="row align-items-center m-b-30">
+                      <div class="col-auto">
+                        <i class="fas fa-folder text-c-yellow f-30"></i>
+                      </div>
+                      <div class="col p-l-0">
+                        <h6 class="m-b-5">Folders</h6>
+                      </div>
+                    </div>
+                    <div class="row align-items-center text-center">
+                      <div class="col">
+                        <h6 class="m-b-0">Total</h6>
+                      </div>
+                      <div class="col"><i class="fas fa-exchange-alt text-c-yellow f-18"></i></div>
+                      <div class="col">
+                        <h6 class="m-b-0">{{ foldersCount }}</h6>
+                      </div>
+                    </div>
+                    <h6 class="pt-badge bg-c-yellow"></h6>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6">
+                <div class="card ticket-card">
+                  <div class="card-body">
+                    <p class="m-b-25 bg-c-red lbl-card"><i class="fas fa-folder-open m-r-5"></i> Open Work Orders</p>
+                    <div class="text-center">
+                      <h2 class="m-b-0 d-inline-block text-c-red">{{ openWOCount }}</h2>
+                      <p class="m-b-0 d-inline-block">Work Orders</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6">
+                <div class="card ticket-card">
+                  <div class="card-body">
+                    <p class="m-b-25 bg-c-blue lbl-card"><i class="fas fa-file-archive m-r-5"></i> Closed Work Orders
+                    </p>
+                    <div class="text-center">
+                      <h2 class="m-b-0 d-inline-block text-c-blue">{{ closedWOCount }}</h2>
+                      <p class="m-b-0 d-inline-block">Work Orders</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6">
+                <div class="card ticket-card">
+                  <div class="card-body">
+                    <p class="m-b-25 bg-c-green lbl-card"><i class="fas fa-users m-r-5"></i> Clients</p>
+                    <div class="text-center">
+                      <h2 class="m-b-0 d-inline-block text-c-green">{{ clientsCount }}</h2>
+                      <p class="m-b-0 d-inline-block">Clients</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6">
+                <div class="card ticket-card">
+                  <div class="card-body">
+                    <p class="m-b-25 bg-c-yellow lbl-card"><i class="fas fa-cog m-r-5"></i> Technicians</p>
+                    <div class="text-center">
+                      <h2 class="m-b-0 d-inline-block text-c-yellow">{{ techniciansCount }}</h2>
+                      <p class="m-b-0 d-inline-block">Technicians</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-4 col-md-12">
+                <div class="card analytic-card bg-c-green">
+                  <div class="card-body">
+                    <div class="row align-items-center m-b-25">
+                      <div class="col-auto">
+                        <i class="fas fa-file text-c-green f-18 analytic-icon"></i>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="m-b-5 text-white">{{ contractsCount }}</h3>
+                        <h6 class="m-b-0 text-white">Contracts</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-4 col-md-6">
+                <div class="card analytic-card bg-c-blue">
+                  <div class="card-body">
+                    <div class="row align-items-center m-b-25">
+                      <div class="col-auto">
+                        <i class="fas fa-users text-c-blue f-18 analytic-icon"></i>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="m-b-5 text-white">{{ (techniciansCount + clientsCount) }}</h3>
+                        <h6 class="m-b-0 text-white">Total Users</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-4 col-md-6">
+                <div class="card analytic-card bg-c-red">
+                  <div class="card-body">
+                    <div class="row align-items-center m-b-25">
+                      <div class="col-auto">
+                        <i class="fas fa-file text-c-red f-18 analytic-icon"></i>
+                      </div>
+                      <div class="col text-right">
+                        <h3 class="m-b-5 text-white">{{ workOrdersCount }}</h3>
+                        <h6 class="m-b-0 text-white">Total Work Orders</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="authority === 'technician'">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-xl-4 col-md-12">
+                <div class="card proj-t-card">
+                  <div class="card-body">
+                    <div class="row align-items-center m-b-30">
+                      <div class="col-auto">
+                        <i class="far fa-calendar-check text-c-red f-30"></i>
+                      </div>
+                      <div class="col p-l-0">
+                        <h6 class="m-b-5">Closed Tickets</h6>
+                      </div>
+                    </div>
+                    <div class="row align-items-center text-center">
+                      <div class="col">
+                        <h6 class="m-b-0">Total</h6>
+                      </div>
+                      <div class="col"><i class="fas fa-exchange-alt text-c-red f-18"></i></div>
+                      <div class="col">
+                        <h6 class="m-b-0">{{ closedTicketsCount }}</h6>
+                      </div>
+                    </div>
+                    <h6 class="pt-badge bg-c-red"></h6>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-4 col-md-6">
+                <div class="card proj-t-card">
+                  <div class="card-body">
+                    <div class="row align-items-center m-b-30">
+                      <div class="col-auto">
+                        <i class="fas fa-calendar-check text-c-green f-30"></i>
+                      </div>
+                      <div class="col p-l-0">
+                        <h6 class="m-b-5">Open Tickets</h6>
+                      </div>
+                    </div>
+                    <div class="row align-items-center text-center">
+                      <div class="col">
+                        <h6 class="m-b-0">Total</h6>
+                      </div>
+                      <div class="col"><i class="fas fa-exchange-alt text-c-green f-18"></i></div>
+                      <div class="col">
+                        <h6 class="m-b-0">{{ openTicketsCount }}</h6>
+                      </div>
+                    </div>
+                    <h6 class="pt-badge bg-c-green"></h6>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-4 col-md-6">
+                <div class="card proj-t-card">
+                  <div class="card-body">
+                    <div class="row align-items-center m-b-30">
+                      <div class="col-auto">
+                        <i class="fas fa-folder text-c-yellow f-30"></i>
+                      </div>
+                      <div class="col p-l-0">
+                        <h6 class="m-b-5">Work Orders</h6>
+                      </div>
+                    </div>
+                    <div class="row align-items-center text-center">
+                      <div class="col">
+                        <h6 class="m-b-0">Total</h6>
+                      </div>
+                      <div class="col"><i class="fas fa-exchange-alt text-c-yellow f-18"></i></div>
+                      <div class="col">
+                        <h6 class="m-b-0">{{ workOrdersCount }}</h6>
+                      </div>
+                    </div>
+                    <h6 class="pt-badge bg-c-yellow"></h6>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6 col-md-6">
+                <div class="card ticket-card">
+                  <div class="card-body">
+                    <p class="m-b-25 bg-c-red lbl-card"><i class="fas fa-folder-open m-r-5"></i> Open Work Orders</p>
+                    <div class="text-center">
+                      <h2 class="m-b-0 d-inline-block text-c-red">{{ openWOCount }}</h2>
+                      <p class="m-b-0 d-inline-block">Work Orders</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6 col-md-6">
+                <div class="card ticket-card">
+                  <div class="card-body">
+                    <p class="m-b-25 bg-c-blue lbl-card"><i class="fas fa-file-archive m-r-5"></i> Closed Work Orders
+                    </p>
+                    <div class="text-center">
+                      <h2 class="m-b-0 d-inline-block text-c-blue">{{ closedWOCount }}</h2>
+                      <p class="m-b-0 d-inline-block">Work Orders</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="authority === 'client'">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-l-4 col-md-6">
+                <div class="card ticket-card">
+                  <div class="card-body">
+                    <p class="m-b-25 bg-c-red lbl-card"><i class="fas fa-folder-open m-r-5"></i> Open Work Orders</p>
+                    <div class="text-center">
+                      <h2 class="m-b-0 d-inline-block text-c-red">{{ openWOCount }}</h2>
+                      <p class="m-b-0 d-inline-block">Work Orders</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-l-4 col-md-6">
+                <div class="card ticket-card">
+                  <div class="card-body">
+                    <p class="m-b-25 bg-c-blue lbl-card"><i class="fas fa-file-archive m-r-5"></i> Closed Work Orders
+                    </p>
+                    <div class="text-center">
+                      <h2 class="m-b-0 d-inline-block text-c-blue">{{ closedWOCount }}</h2>
+                      <p class="m-b-0 d-inline-block">Work Orders</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-l-4 col-md-6">
+                <div class="card ticket-card">
+                  <div class="card-body">
+                    <p class="m-b-25 bg-c-blue lbl-card"><i class="fas fa-file-archive m-r-5"></i> Work Orders</p>
+                    <div class="text-center">
+                      <h2 class="m-b-0 d-inline-block text-c-blue">{{ workOrdersCount }}</h2>
+                      <p class="m-b-0 d-inline-block">Work Orders</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+    </div>
+  </div>
+</div>

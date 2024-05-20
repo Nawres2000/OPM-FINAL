@@ -1,0 +1,144 @@
+<div class="col-md-12">
+  <div class="card table-card">
+    <div class="card-header">
+      <div class="row justify-content-between align-items-center px-2">
+        <h4 class="w-auto">Clients List</h4>
+        <div class="row">
+          <div class="input-group w-auto mx-2">
+            <div *ngIf="searchQuery.length > 0" class="input-group-prepend">
+              <span class="input-group-text">
+                <a (click)="clearSearch()" style="cursor: pointer;">
+                  <i class="pi pi-times"></i>
+                </a>
+              </span>
+            </div>
+            <input [(ngModel)]="searchQuery" type="text" class="form-control" id="search" placeholder="Search...">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <a (click)="search()" style="cursor: pointer;">
+                  <i class="feather icon-search"></i>
+                </a>
+              </span>
+            </div>
+          </div>
+          <!-- <button (click)="displayAddUserModal = true" class="btn btn-primary">
+            <i class="pi pi-plus m-0"></i>
+          </button> -->
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <ng-container *ngIf="isLoading; else ShowTable">
+        <div
+          style="width: 100%; height: 400px; text-align: center; font-size: 1rem; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+          <div class="">
+            <i class="pi pi-spinner pi-spin"></i>
+            <br>
+            <span>Loading...</span>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #ShowTable>
+        <ng-container *ngIf="clients.length > 0; else ShowNoUsers">
+          <div class="table-responsive">
+            <table class="table table-hover m-b-0">
+              <thead>
+                <tr>
+                  <th>E-mail</th>
+                  <th>Company</th>
+                  <th>Contract</th>
+                  <th>SLA</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let client of clients">
+                  <td>
+                    <p class="m-0">{{ client.email }}</p>
+                  </td>
+                  <td>
+                    <p class="m-0">{{ client.company }}</p>
+                  </td>
+                  <td>
+                    <p class="m-0">{{ client.contractId && client.contractId.type }}</p>
+                  </td>
+                  <td>
+                    <p class="m-0">{{ client.contractId && client.contractId.SLA || "--" }} Hour(s)</p>
+                  </td>
+                  <td>
+                    <label class="label label-success" *ngIf="client.valid">Active</label>
+                    <label class="label label-success br-bootstrap" style="background-color: red;"
+                      *ngIf="!client.valid">Inactive</label>
+                  </td>
+                  <td>
+                    <a (click)="setClientStatus(client.email, 'activate', true)" *ngIf="!client.valid"
+                      class="btn btn-sm btn-success"><i class="pi pi-check-circle f-16 m-0 text-white"></i></a>
+                    <a (click)="setClientStatus(client.email, 'deactivate', false)" *ngIf="client.valid"
+                      class="btn btn-sm btn-danger"><i class="pi pi-power-off f-16 m-0 text-white"></i></a>
+                    <a (click)="showEditContractModal(client.email)" class="btn btn-sm btn-info"><i
+                        class="icon feather icon-edit f-16 m-0 text-white"></i></a>
+                    <a (click)="deleteUser(client.email)" class="btn btn-sm btn-danger"><i
+                        class="icon feather icon-trash f-16 m-0 text-white"></i></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+      </ng-template>
+    </div>
+    <div *ngIf="!isLoading" class="card-footer text-start">
+      <span>{{ clients.length || 0 }} client(s)</span>
+    </div>
+  </div>
+</div>
+
+<ng-template #ShowNoUsers>
+  <div
+    style="width: 100%; height: 400px; text-align: center; font-size: 1rem; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+    <div class="">
+      <i class="pi pi-times"></i>
+      <br>
+      <span>No clients</span>
+    </div>
+  </div>
+</ng-template>
+
+<p-dialog header="Edit contract" [(visible)]="displayEditContractModal" [modal]="true" [style]="{width: '35vw'}"
+  [baseZIndex]="10000" [draggable]="false" [resizable]="false" (onHide)="clearFormsData()">
+  <form class="form-group" [formGroup]="contractForm" (ngSubmit)="updateContract()">
+    <div class="mb-2">
+      <label for="type">Type:</label>
+      <div class="input-group">
+        <select class="form-control" id="type" formControlName="type">
+          <option value="support and maintenance soft">Support and maintenance software</option>
+          <option value="support and maintenance hard">Support and maintenance hardware</option>
+          <option value="outsourcing">Outsourcing</option>
+        </select>
+      </div>
+      <div *ngIf="contractForm.get('type').errors && contractForm.get('type').touched" class="text-danger">
+        * Type is required.
+      </div>
+    </div>
+    <div class="mb-2">
+      <label for="SLA">SLA:</label>
+      <div class="input-group mb-2">
+        <input type="number" class="form-control" id="SLA" formControlName="SLA" placeholder="SLA">
+      </div>
+      <div *ngIf="contractForm.get('SLA').errors && contractForm.get('SLA').touched" class="text-danger">
+        * SLA is required.
+      </div>
+    </div>
+  </form>
+  <hr>
+  <ng-template pTemplate="footer row">
+    <button (click)="updateContract()" class="btn btn-primary btn-block">
+      <span *ngIf="!isEditing"> <i class="feather icon-edit"></i> Edit</span>
+      <i *ngIf="isEditing" class="pi pi-spinner pi-spin"></i>
+    </button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog key="clientsConfirm" [baseZIndex]="9999" header="Confirmation"
+  icon="pi pi-exclamation-triangle"></p-confirmDialog>

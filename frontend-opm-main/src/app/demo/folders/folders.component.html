@@ -1,0 +1,71 @@
+<div class="card mx-1">
+  <div class="card-header">
+    <h4>Folders</h4>
+  </div>
+  <div class="card-body" style="min-height: 400px;">
+    <div class="row justify-content-between">
+      <ng-container *ngIf="isLoading; else ShowData">
+        <div
+          style="width: 100%; height: 400px; text-align: center; font-size: 1rem; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+          <div class="">
+            <i class="pi pi-spinner pi-spin"></i>
+            <br>
+            <span>Loading...</span>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #ShowData>
+        <ng-container *ngIf="folders.length > 0; else ShowNoFolders">
+          <ng-container *ngFor="let folder of folders; trackBy: trackById">
+            <div class="col-12 col-lg-6">
+              <a class="custom-card" [routerLink]="folder._id">
+                <div class="custom-card-body">
+                  <div class="row">
+                    <div class="col-10">
+                      <span class="custom-card-title">
+                        <i class="pi pi-folder"></i>
+                        <span class="mx-2">
+                          {{ folder.name }}
+                        </span>
+                      </span>
+                      <br>
+                      <ng-container *ngIf="!!folder.clientId">
+                        <span class="text-muted">
+                          Company: {{ folder.clientId.company }}
+                        </span>
+                        <br>
+                      </ng-container>
+                      <span class="text-muted">
+                        Created: {{ folder.creationDate | date: 'medium' }}
+                      </span>
+                    </div>
+                    <div class="col-2">
+                      <div class="row text-center align-items-center h-100">
+                        <i class="fa fa-chevron-circle-right chevron"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="custom-card-stripe"></div>
+              </a>
+            </div>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+    </div>
+  </div>
+  <div *ngIf="!isLoading" class="card-footer text-start">
+    <span>{{ folders.length || 0 }} folder(s)</span>
+  </div>
+</div>
+
+<ng-template #ShowNoFolders>
+  <div
+    style="width: 100%; height: 400px; text-align: center; font-size: 1rem; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+    <div class="">
+      <i class="pi pi-times"></i>
+      <br>
+      <span>No folders</span>
+    </div>
+  </div>
+</ng-template>

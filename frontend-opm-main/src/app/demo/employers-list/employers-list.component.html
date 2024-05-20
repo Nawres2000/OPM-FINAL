@@ -1,0 +1,99 @@
+<div class="col-md-12">
+  <div class="card table-card">
+    <div class="card-header">
+      <div class="row justify-content-between align-items-center px-2">
+        <h4 class="w-auto">Technicians List</h4>
+        <div class="row">
+          <div class="input-group w-auto mx-2">
+            <div *ngIf="searchQuery.length > 0" class="input-group-prepend">
+              <span class="input-group-text">
+                <a (click)="clearSearch()" style="cursor: pointer;">
+                  <i class="pi pi-times"></i>
+                </a>
+              </span>
+            </div>
+            <input [(ngModel)]="searchQuery" type="text" class="form-control" id="search" placeholder="Search...">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <a (click)="search()" style="cursor: pointer;">
+                  <i class="feather icon-search"></i>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <ng-container *ngIf="isLoading; else ShowTable">
+        <div
+          style="width: 100%; height: 400px; text-align: center; font-size: 1rem; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+          <div class="">
+            <i class="pi pi-spinner pi-spin"></i>
+            <br>
+            <span>Loading...</span>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #ShowTable>
+        <ng-container *ngIf="technicians.length > 0; else ShowNoUsers">
+          <div class="table-responsive">
+            <table class="table table-hover m-b-0">
+              <thead>
+                <tr>
+                  <th>Name and E-mail</th>
+                  <th>Birth Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let technician of technicians">
+                  <td>
+                    <h6 class="m-0">{{ technician.firstName + " " + technician.lastName }}</h6>
+                    <p class="m-0">{{ technician.email }}</p>
+                  </td>
+                  <td>
+                    <p class="m-0">{{ technician.birthDate | date: 'mediumDate' }}</p>
+                  </td>
+                  <td>
+                    <label class="label label-success" *ngIf="technician.valid">Active</label>
+                    <label class="label label-success br-bootstrap" style="background-color: red;"
+                      *ngIf="!technician.valid">Inactive</label>
+                  </td>
+                  <td>
+                    <a (click)="setTechnicianStatus(technician.email, 'activate', true)" *ngIf="!technician.valid"
+                      class="btn btn-sm btn-success"><i class="pi pi-check-circle f-16 m-0 text-white"></i></a>
+                    <a (click)="setTechnicianStatus(technician.email, 'deactivate', false)" *ngIf="technician.valid"
+                      class="btn btn-sm btn-danger"><i class="pi pi-power-off f-16 m-0 text-white"></i></a>
+                    <!-- <a (click)="showEditUserModal(technician.email)" class="btn btn-sm btn-info"><i
+                        class="icon feather icon-edit f-16 m-0 text-white"></i></a> -->
+                    <a (click)="deleteUser(technician.email)" class="btn btn-sm btn-danger"><i
+                        class="icon feather icon-trash f-16 m-0 text-white"></i></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+      </ng-template>
+    </div>
+    <div *ngIf="!isLoading" class="card-footer text-start">
+      <span>{{ technicians.length || 0 }} technician(s)</span>
+    </div>
+  </div>
+</div>
+
+<ng-template #ShowNoUsers>
+  <div
+    style="width: 100%; height: 400px; text-align: center; font-size: 1rem; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+    <div class="">
+      <i class="pi pi-times"></i>
+      <br>
+      <span>No technicians</span>
+    </div>
+  </div>
+</ng-template>
+
+<p-confirmDialog key="techniciansConfirm" [baseZIndex]="9999" header="Confirmation"
+  icon="pi pi-exclamation-triangle"></p-confirmDialog>
